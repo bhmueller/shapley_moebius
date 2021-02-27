@@ -13,6 +13,7 @@
 *.toc
 *.bib.sav
 *.bib.bak
+*.ipynb
 *.ipynb_checkpoints
 
 # Folder
