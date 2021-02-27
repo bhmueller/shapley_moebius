@@ -42,16 +42,20 @@ def shapley_moebius(k, n, model, trafo):
     y_b = model(x_b)
 
     n_subsets = np.power(2, k) - 1  # l: number of non-vanishing input subsets.
+    inputs_encoded = np.power(2, np.arange(k))
     h_matrix = np.zeros((2, n_subsets))  # H
     subset_size = np.zeros((1, n_subsets))  # sz
 
     # Iterate over all subsets.
     for i in np.arange(n_subsets):
         # g is set of inputs considered.
-        g = np.bitwise_and(
-            i,
-            np.power(2, np.arange(0, k - 1)) != 0,
-        )  # Here sth. missing.
+        g = (
+            np.bitwise_and(
+                i,
+                inputs_encoded,
+            )
+            != 0
+        )
         subset_size[i] = np.sum(g)
         x_i = x_a  # x_i is always set to x_a again?
         x_i[:, g] = x_b[:, g]
