@@ -5,7 +5,7 @@ from shapley_moebius import shapley_moebius
 from auxiliary_functions import ishigami_function
 
 
-def test_bitwise_end():
+def test_bitwise_and():
     print(1)
 
 
