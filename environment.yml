@@ -1,11 +1,10 @@
-name: thesis-benedikt
+name: epp-project
 
 channels:
 - conda-forge
-- opensourceeconomics
 
 dependencies:
-- python=3.7.0
+- python=3.8
 - ipython
 - numpy
 - pandas
@@ -13,9 +12,9 @@ dependencies:
 - matplotlib
 - seaborn
 - scipy
-- ruspy
 - chaospy
 - pip
 - pip:
   - flake8
+  - black
 
