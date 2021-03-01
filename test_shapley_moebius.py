@@ -11,14 +11,6 @@ from shapley_moebius import _calc_h_matrix
 from auxiliary_functions import ishigami_function
 
 
-def model(x):
-    return np.sum(x)
-
-
-def trafo(x):
-    return x
-
-
 # def test_bitwise_and():
 #     k = 4
 #     inputs_encoded = np.power(2, np.arange(k))
@@ -45,6 +37,9 @@ def test_h_matrix_non_zero():
     def model(x):
         return np.sum(x)
 
+    def trafo(x):
+        return x
+
     k = 3
     n = 10
 
@@ -54,9 +49,9 @@ def test_h_matrix_non_zero():
     x_b = trafo(u[:, k:])
 
     n_subsets = np.power(2, k) - 1
-    subset_encoder = np.power(2, np.arange(k))
+    power_sequence = np.power(2, np.arange(k))
 
-    h_matrix_expected = _calc_h_matrix(n, model, x_a, x_b, n_subsets, subset_encoder)
+    h_matrix_expected = _calc_h_matrix(n, model, x_a, x_b, n_subsets, power_sequence)
 
     zero_array = np.zeros((2, n_subsets))
 
@@ -64,15 +59,30 @@ def test_h_matrix_non_zero():
         assert_array_compare(operator.__ne__, h_matrix_expected, zero_array)
 
 
-def test_mob():
-    print(1)
+# def test_mob():
+#     print(1)
 
 
-def test_sum_mob():
-    print(1)
+# def test_sum_mob():
+#     print(1)
 
 
-def test_ishigami():
+def test_simplest_case():
+    """Just check that shapley_moebius runs through."""
+
+    def model(x):
+        return np.sum(x)
+
+    def trafo(x):
+        return x
+
+    k = 3
+    n = 10
+
+    shapley_effects, variance = shapley_moebius(k, n, model, trafo)
+
+
+def test_():
     """
     This test setting is taken from Iooss, Betrand and Clémentine Prieur. 2019. Shapley
     effects for sensitivity analysis with correlated inputs: comparisons with Sobol’
@@ -82,3 +92,7 @@ def test_ishigami():
     # n = 10
     # model = ishigami_function
     # trafo = rosenblatt_transformation
+
+
+def test_ishigami():
+    """This test setting is taken from PRB20."""
