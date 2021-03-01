@@ -7,8 +7,7 @@ import chaospy as cp
 
 
 def shapley_moebius(k, n, model, trafo):
-    """
-    Estimate Shapley effects via Möbius inverse.
+    """Estimate Shapley effects via Möbius inverse.
 
     Parameters
     ----------
@@ -30,20 +29,19 @@ def shapley_moebius(k, n, model, trafo):
         Total variance of model output.
     """
 
-    # Better use chaospy.create_sobol_samples(order, dim, seed=1)
-    # order: no. of unique samples, dim: no. of spacial dim.s, i.e. no. of inputs.
-    u = cp.create_sobol_samples(
-        n, 2 * k, 123
-    ).T  # dim = 2 * k, since want two data sets.
+    # dim = 2 * k, since want two data sets.
+    u = cp.create_sobol_samples(n, 2 * k, 123).T
     # u has n rows and 2 * k columns.
+
     x_a = trafo(u[:, 0:k])
     x_b = trafo(u[:, k:])
 
     n_subsets = np.power(2, k) - 1  # l: number of non-vanishing input subsets.
-    subset_encoder = np.power(2, np.arange(k))
+    # Want a 2 power d sequence for binary coding, d = 1, ..., k.
+    power_sequence = np.power(2, np.arange(k))
 
     h_matrix, subset_size = _calc_h_matrix(
-        n, model, x_a, x_b, n_subsets, subset_encoder
+        n, model, x_a, x_b, n_subsets, power_sequence
     )
 
     mob = np.zeros((2, n_subsets))
@@ -75,7 +73,7 @@ def shapley_moebius(k, n, model, trafo):
     return shapley_effects, variance
 
 
-def _calc_h_matrix(n, model, x_a, x_b, n_subsets, subset_encoder):
+def _calc_h_matrix(n, model, x_a, x_b, n_subsets, power_sequence):
 
     y_a = model(x_a)
     y_b = model(x_b)
@@ -88,13 +86,14 @@ def _calc_h_matrix(n, model, x_a, x_b, n_subsets, subset_encoder):
         g = (
             np.bitwise_and(
                 i + 1,
-                subset_encoder,
+                power_sequence,
             )
             != 0
         )
         subset_size[:, i] = np.sum(
             g
         )  # Sum over boolean: True/False interpreted as 1/0.
+
         x_i = x_a.copy()  # x_i is always set to x_a again.
         x_i[:, g] = x_b[:, g].copy()  # Some are replaced by values from x_b.
         y_i = model(x_i)
