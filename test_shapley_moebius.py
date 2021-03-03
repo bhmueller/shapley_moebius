@@ -103,7 +103,7 @@ def test_ishigami():
     """This test setting is taken from PRB20."""
     # Transform U(0, 1) to U(-pi, pi). Inputs independent.
     def trafo(x):
-        x_trafo = (x - 0.5) * np.pi
+        x_trafo = (x - 0.5) * 2 * np.pi
         return x_trafo
 
     k = 3
@@ -117,4 +117,4 @@ def test_ishigami():
     desired = np.array([0.4358, 0.4424, 0.1218])
 
     # Check relative tolerance only.
-    assert_allclose(shapley_effects, desired, rtol=1e-07)
+    assert_allclose(shapley_effects, desired, rtol=1e-04)
