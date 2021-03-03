@@ -1,12 +1,18 @@
 """
 This file contains tests for shapley_moebius.py.
+
+Iooss, Betrand and Clémentine Prieur. 2019.
+    Shapley effects for sensitivity analysis with correlated inputs: comparisons with
+    Sobol’ indices, numerical estimation and applications. hal-01556303v6
 """
 import numpy as np
 import chaospy as cp
 import operator
 import pytest
 from numpy.testing import assert_array_compare
-from shapley_moebius import shapley_moebius
+from numpy.testing import assert_allclose
+from numpy.testing import assert_array_almost_equal
+from shapley_moebius import shapley_moebius_independent
 from shapley_moebius import _calc_h_matrix
 from auxiliary_functions import ishigami_function
 
@@ -79,14 +85,11 @@ def test_simplest_case():
     k = 3
     n = 10
 
-    shapley_effects, variance = shapley_moebius(k, n, model, trafo)
+    shapley_effects, variance = shapley_moebius_independent(k, n, model, trafo)
 
 
 def test_():
-    """
-    This test setting is taken from Iooss, Betrand and Clémentine Prieur. 2019. Shapley
-    effects for sensitivity analysis with correlated inputs: comparisons with Sobol’
-    indices, numerical estimation and applications. hal-01556303v6"""
+    """This test setting is taken from IP19."""
 
     # k = 3
     # n = 10
@@ -96,3 +99,20 @@ def test_():
 
 def test_ishigami():
     """This test setting is taken from PRB20."""
+    # Transform U(0, 1) to U(-pi, pi). Inputs independent.
+    def trafo(x):
+        x_trafo = (x - 0.5) * np.pi
+        return x_trafo
+
+    k = 3
+    n = 10 ** 4
+
+    shapley_effects, variance = shapley_moebius_independent(
+        k, n, ishigami_function, trafo
+    )
+
+    # Desired values are taken from PRB20.
+    desired = np.array([0.4358, 0.4424, 0.1218])
+
+    # Check relative tolerance only.
+    assert_allclose(shapley_effects, desired, rtol=1e-07)
