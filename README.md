@@ -17,7 +17,7 @@ and input dependence.
 ## Acknowledgement
 
 I thank Dr. Elmar Plischke for providing me with the MATLAB implementation of algorithm 5.1 for both,
-the case of dependent and independent inputs.
+dependent and independent inputs.
 
 ## References
 
