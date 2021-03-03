@@ -40,7 +40,7 @@ def shapley_moebius_independent(k, n, model, trafo):
     # Want a 2 power d sequence for binary coding, d = 1, ..., k.
     power_sequence = np.power(2, np.arange(k))
 
-    h_matrix, subset_size = _calc_h_matrix(
+    h_matrix, subset_size = _calc_h_matrix_independent(
         n, model, x_a, x_b, n_subsets, power_sequence
     )
 
@@ -73,7 +73,7 @@ def shapley_moebius_independent(k, n, model, trafo):
     return shapley_effects, variance
 
 
-def _calc_h_matrix(n, model, x_a, x_b, n_subsets, power_sequence):
+def _calc_h_matrix_independent(n, model, x_a, x_b, n_subsets, power_sequence):
 
     y_a = model(x_a)
     y_b = model(x_b)

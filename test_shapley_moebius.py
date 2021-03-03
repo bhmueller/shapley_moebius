@@ -13,7 +13,7 @@ from numpy.testing import assert_array_compare
 from numpy.testing import assert_allclose
 from numpy.testing import assert_array_almost_equal
 from shapley_moebius import shapley_moebius_independent
-from shapley_moebius import _calc_h_matrix
+from shapley_moebius import _calc_h_matrix_independent
 from auxiliary_functions import ishigami_function
 
 
@@ -57,7 +57,9 @@ def test_h_matrix_non_zero():
     n_subsets = np.power(2, k) - 1
     power_sequence = np.power(2, np.arange(k))
 
-    h_matrix_expected = _calc_h_matrix(n, model, x_a, x_b, n_subsets, power_sequence)
+    h_matrix_expected = _calc_h_matrix_independent(
+        n, model, x_a, x_b, n_subsets, power_sequence
+    )
 
     zero_array = np.zeros((2, n_subsets))
 
