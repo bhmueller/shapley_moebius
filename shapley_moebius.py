@@ -6,8 +6,8 @@ import numpy as np
 import chaospy as cp
 
 
-def shapley_moebius(k, n, model, trafo):
-    """Estimate Shapley effects via Möbius inverse.
+def shapley_moebius_independent(k, n, model, trafo):
+    """Estimate Shapley effects under input independence via Möbius inverse.
 
     Parameters
     ----------
