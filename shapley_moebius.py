@@ -46,21 +46,18 @@ def shapley_moebius_independent(k, n, model, trafo):
 
     mob = np.zeros((2, n_subsets))
     # sel = 1
-    # Array of False.
-    sel = np.full((1, n_subsets), False)
-    # sel = np.zeros((1, n_subsets))
+
+    sel = np.zeros(n_subsets, dtype=np.int8)
 
     for i in np.arange(n_subsets):
-        # First slicing [0: i - 1] in MATLAB: sel(1:i)
-        sel[0 : i - 1] = np.bitwise_xor(
-            sel[0:i], sel[0 : i - 1]
-        )  # Not like in MATLAB code.
+
+        sel[0 : i + 1] = np.bitwise_xor(
+            sel[0 : i + 1], np.concatenate((np.ones(1, dtype=np.int8), sel[0:i]))
+        )
 
         # np.nonzero: get indices of nonzero elements in array.
+        # ii reads the indices where sel not zero: from 0 1 0 1 -> 1 3 (zero-indexing)
         ii = np.nonzero(sel)  # First sel = 1 (see above).
-
-        # Need indices where sel is True.
-        # ii = np.where(sel == True)[1][0]
 
         mob[:, i] = (
             h_matrix[:, ii] * np.power(-1, subset_size[i] + subset_size[ii].T)
