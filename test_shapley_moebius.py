@@ -12,6 +12,7 @@ import pytest
 from numpy.testing import assert_array_compare
 from numpy.testing import assert_allclose
 from numpy.testing import assert_array_almost_equal
+from numpy.testing import assert_array_equal
 from shapley_moebius import shapley_moebius_independent
 from shapley_moebius import _calc_h_matrix_independent
 from auxiliary_functions import ishigami_function
@@ -65,6 +66,26 @@ def test_h_matrix_non_zero():
 
     with pytest.raises(AssertionError):
         assert_array_compare(operator.__ne__, h_matrix_expected, zero_array)
+
+
+def test_find_sel():
+    """Check, whether 2nd for loop spits out the correct bits."""
+
+    expected = np.array(
+        [
+            [1, 0, 0, 0, 0, 0, 0],
+            [0, 1, 0, 0, 0, 0, 0],
+            [1, 1, 1, 0, 0, 0, 0],
+            [0, 0, 0, 1, 0, 0, 0],
+            [1, 0, 0, 1, 1, 0, 0],
+            [0, 1, 0, 1, 0, 1, 0],
+            [1, 1, 1, 1, 1, 1, 1],
+        ]
+    )
+
+    actual = np.array([])
+
+    assert_array_equal(actual, expected)
 
 
 # def test_mob():
