@@ -57,11 +57,11 @@ def shapley_moebius_independent(k, n, model, trafo):
 
         # np.nonzero: get indices of nonzero elements in array.
         # ii reads the indices where sel not zero: from 0 1 0 1 -> 1 3 (zero-indexing)
-        ii = np.nonzero(sel)  # First sel = 1 (see above).
+        ii = np.nonzero(sel)
 
         mob[:, i] = (
-            h_matrix[:, ii] * np.power(-1, subset_size[i] + subset_size[ii].T)
-        ) / subset_size[i]
+            h_matrix[:, ii] * np.power(-1, subset_size[0][i] + subset_size[0][ii].T)
+        ) / subset_size[0][i]
 
         # sel = np.bitwise_xor([1, sel], [sel, 0])
 
@@ -109,6 +109,9 @@ def _calc_h_matrix_independent(n, model, x_a, x_b, n_subsets, power_sequence):
         x_i[:, g] = x_b[:, g].copy()  # Some are replaced by values from x_b.
         y_i = model(x_i)
         # Fill columns of h_matrix one by one.
-        h_matrix[:, i] = [np.mean(np.power((y_i - y_a), 2)), (y_b.T * (y_i - y_a)) / n]
+        h_matrix[:, i] = [
+            np.mean(np.power((y_i - y_a), 2)) / 2,
+            (y_b.T * (y_i - y_a)) / n,
+        ]
 
     return h_matrix, subset_size
