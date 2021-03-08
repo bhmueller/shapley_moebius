@@ -167,19 +167,35 @@ def test_mob_independent():
 # #     print(1)
 
 
-# def test_simplest_case():
-#     """Just check that shapley_moebius runs through."""
+def test_simplest_case():
+    """Test entire function for simple case, where data is uniformly distributed on
+    [0, 1). Expected values derived by MATLAB implementation.
+    """
 
-#     def model(x):
-#         return np.sum(x)
+    def model(x):
+        return np.sum(x)
 
-#     def trafo(x):
-#         return x
+    def trafo(x):
+        return x
 
-#     k = 3
-#     n = 10
+    k = 3
+    n = 10
 
-#     shapley_effects, variance = shapley_moebius_independent(k, n, model, trafo)
+    np.random.seed(123)
+
+    shapley_effects_actual, variance_actual = shapley_moebius_independent(
+        k, n, model, trafo
+    )
+
+    shapley_effects_expected = np.array(
+        [[3.06472778, 0.95870972, 4.07058716], [2.53569031, 0.79321594, 3.36791687]]
+    )
+
+    variance_expected = np.array([[8.09402466], [6.69682312]])
+
+    assert_array_almost_equal(shapley_effects_actual, shapley_effects_expected)
+
+    assert_array_almost_equal(variance_actual, variance_expected)
 
 
 # def test_():
