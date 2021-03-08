@@ -44,26 +44,7 @@ def shapley_moebius_independent(k, n, model, trafo):
         n, model, x_a, x_b, n_subsets, power_sequence
     )
 
-    mob = np.zeros((2, n_subsets))
-    # sel = 1
-
-    sel = np.zeros(n_subsets, dtype=np.int8)
-
-    for i in np.arange(n_subsets):
-
-        sel[0 : i + 1] = np.bitwise_xor(
-            sel[0 : i + 1], np.concatenate((np.ones(1, dtype=np.int8), sel[0:i]))
-        )
-
-        # np.nonzero: get indices of nonzero elements in array.
-        # ii reads the indices where sel not zero: from 0 1 0 1 -> 1 3 (zero-indexing)
-        ii = np.nonzero(sel)
-
-        mob[:, i] = (
-            h_matrix[:, ii] * np.power(-1, subset_size[0][i] + subset_size[0][ii].T)
-        ) / subset_size[0][i]
-
-        # sel = np.bitwise_xor([1, sel], [sel, 0])
+    mob = _calc_mob_independent(n_subsets, h_matrix, subset_size)
 
     shapley_effects = np.ones((2, k))
 
@@ -115,3 +96,30 @@ def _calc_h_matrix_independent(n, model, x_a, x_b, n_subsets, power_sequence):
         ]
 
     return h_matrix, subset_size
+
+
+def _calc_mob_independent(n_subsets, h_matrix, subset_size):
+    mob = np.zeros((2, n_subsets))
+    # sel = 1
+
+    sel = np.zeros(n_subsets, dtype=np.int8)
+
+    for i in np.arange(n_subsets):
+
+        sel[0 : i + 1] = np.bitwise_xor(
+            sel[0 : i + 1], np.concatenate((np.ones(1, dtype=np.int8), sel[0:i]))
+        )
+
+        # np.nonzero: get indices of nonzero elements in array.
+        # ii reads the indices where sel not zero: from 0 1 0 1 -> 1 3 (zero-indexing)
+        ii = np.nonzero(sel)
+
+        mob[:, i] = (
+            np.dot(
+                h_matrix[:, ii], np.power(-1, subset_size[0][i] + subset_size[0][ii].T)
+            )[:, 0]
+        ) / subset_size[0][i]
+
+        # sel = np.bitwise_xor([1, sel], [sel, 0])
+
+    return mob
