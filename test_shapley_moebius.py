@@ -15,7 +15,7 @@ from numpy.testing import assert_array_almost_equal
 from numpy.testing import assert_array_equal
 from shapley_moebius import shapley_moebius_independent
 from shapley_moebius import _calc_h_matrix_independent
-from shapley_moebius import _calc_mob
+from shapley_moebius import _calc_mob_independent
 from auxiliary_functions import ishigami_function
 
 
@@ -92,7 +92,7 @@ def test_h_matrix_independent():
     #     assert_array_compare(operator.__ne__, h_matrix_expected, zero_array)
 
 
-def test_mob():
+def test_mob_independent():
     """Use same setting as for test_h_matrix_independent."""
 
     k = 3
@@ -118,7 +118,7 @@ def test_mob():
 
     subset_size = np.array([[1, 1, 2, 1, 2, 2, 3]])
 
-    mob_actual = _calc_mob(n_subsets, h_matrix, subset_size)
+    mob_actual = _calc_mob_independent(n_subsets, h_matrix, subset_size)
 
     # Get expected mob from Octave. Load mob_results.mat.
     mob_expected = np.array(
@@ -139,74 +139,74 @@ def test_mob():
     assert_array_almost_equal(mob_actual, mob_expected)
 
 
-def test_find_sel():
-    """Check, whether 2nd for loop spits out the correct bits."""
+# def test_find_sel():
+#     """Check, whether 2nd for loop spits out the correct bits."""
 
-    expected = np.array(
-        [
-            [1, 0, 0, 0, 0, 0, 0],
-            [0, 1, 0, 0, 0, 0, 0],
-            [1, 1, 1, 0, 0, 0, 0],
-            [0, 0, 0, 1, 0, 0, 0],
-            [1, 0, 0, 1, 1, 0, 0],
-            [0, 1, 0, 1, 0, 1, 0],
-            [1, 1, 1, 1, 1, 1, 1],
-        ]
-    )
+#     expected = np.array(
+#         [
+#             [1, 0, 0, 0, 0, 0, 0],
+#             [0, 1, 0, 0, 0, 0, 0],
+#             [1, 1, 1, 0, 0, 0, 0],
+#             [0, 0, 0, 1, 0, 0, 0],
+#             [1, 0, 0, 1, 1, 0, 0],
+#             [0, 1, 0, 1, 0, 1, 0],
+#             [1, 1, 1, 1, 1, 1, 1],
+#         ]
+#     )
 
-    actual = np.array([])
+#     actual = np.array([])
 
-    assert_array_equal(actual, expected)
-
-
-# def test_mob():
-#     print(1)
+#     assert_array_equal(actual, expected)
 
 
-# def test_sum_mob():
-#     print(1)
+# # def test_mob():
+# #     print(1)
 
 
-def test_simplest_case():
-    """Just check that shapley_moebius runs through."""
-
-    def model(x):
-        return np.sum(x)
-
-    def trafo(x):
-        return x
-
-    k = 3
-    n = 10
-
-    shapley_effects, variance = shapley_moebius_independent(k, n, model, trafo)
+# # def test_sum_mob():
+# #     print(1)
 
 
-def test_():
-    """This test setting is taken from IP19."""
+# def test_simplest_case():
+#     """Just check that shapley_moebius runs through."""
 
-    # k = 3
-    # n = 10
-    # model = ishigami_function
-    # trafo = rosenblatt_transformation
+#     def model(x):
+#         return np.sum(x)
+
+#     def trafo(x):
+#         return x
+
+#     k = 3
+#     n = 10
+
+#     shapley_effects, variance = shapley_moebius_independent(k, n, model, trafo)
 
 
-def test_ishigami():
-    """This test setting is taken from PRB20."""
-    # Transform U(0, 1) to U(-pi, pi). Inputs independent.
-    def trafo(x):
-        x_trafo = (x - 0.5) * 2 * np.pi
-        return x_trafo
+# def test_():
+#     """This test setting is taken from IP19."""
 
-    k = 3
-    n = 10 ** 4
+#     # k = 3
+#     # n = 10
+#     # model = ishigami_function
+#     # trafo = rosenblatt_transformation
 
-    shapley_effects, variance = shapley_moebius_independent(
-        k, n, ishigami_function, trafo
-    )
 
-    # Desired values are taken from PRB20.
-    desired = np.array([0.4358, 0.4424, 0.1218])
+# def test_ishigami():
+#     """This test setting is taken from PRB20."""
+#     # Transform U(0, 1) to U(-pi, pi). Inputs independent.
+#     def trafo(x):
+#         x_trafo = (x - 0.5) * 2 * np.pi
+#         return x_trafo
 
-    # Check relative tolerance only.
-    assert_allclose(shapley_effects, desired, rtol=1e-04)
+#     k = 3
+#     n = 10 ** 4
+
+#     shapley_effects, variance = shapley_moebius_independent(
+#         k, n, ishigami_function, trafo
+#     )
+
+#     # Desired values are taken from PRB20.
+#     desired = np.array([0.4358, 0.4424, 0.1218])
+
+#     # Check relative tolerance only.
+#     assert_allclose(shapley_effects, desired, rtol=1e-04)
