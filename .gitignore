@@ -1,6 +1,7 @@
 # Latex
 .*
 *.m
+*.mat
 *.log
 *.aux
 *.bbl
