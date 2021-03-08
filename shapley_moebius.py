@@ -49,18 +49,15 @@ def shapley_moebius_independent(k, n, model, trafo):
     shapley_effects = np.ones((2, k))
 
     for i in np.arange(k):
-        # sum(dim=2) in Matlab sums elements in each row and returns a column vector.
         shapley_effects[:, i] = np.sum(
             mob[
-                :,  # Below line is faulty.
-                np.where[np.bitwise_and(np.arange(n_subsets), np.power(2, i - 1)) != 0],
-            ],
-            1,
+                :,
+                np.nonzero(np.bitwise_and(np.arange(n_subsets) + 1, np.power(2, i))),
+            ][:, 0, :],
+            axis=1,
         )
-    # In Numpy column is axis = 1. In Matlab, dim = 2 is a column; dimension in Matlab:
-    # 1 = row, 2 = column.
 
-    variance = h_matrix[:, -1]
+    variance = np.array([[h_matrix[0, -1]], [h_matrix[1, -1]]])
 
     return shapley_effects, variance
 
