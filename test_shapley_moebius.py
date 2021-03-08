@@ -36,10 +36,8 @@ from auxiliary_functions import ishigami_function
 #     assert_array_equal(g, g_expected)
 
 
-def test_h_matrix_non_zero():
-    """
-    This test should pass if all elements in h_matrix are unequal zero.
-    """
+def test_h_matrix_independent():
+    """The expected result is calculated with the original MATLAB implementation."""
 
     def model(x):
         return np.sum(x)
@@ -58,14 +56,43 @@ def test_h_matrix_non_zero():
     n_subsets = np.power(2, k) - 1
     power_sequence = np.power(2, np.arange(k))
 
-    h_matrix_expected = _calc_h_matrix_independent(
+    h_matrix_actual, subset_size_actual = _calc_h_matrix_independent(
         n, model, x_a, x_b, n_subsets, power_sequence
     )
 
-    zero_array = np.zeros((2, n_subsets))
+    h_matrix_expected = np.array(
+        [
+            [
+                0.73832584,
+                0.71782215,
+                0.00014436,
+                0.91299381,
+                0.00926372,
+                3.24991100,
+                0.89017728,
+            ],
+            [
+                1.67812540,
+                -1.65466014,
+                0.02346526,
+                -1.86609734,
+                -0.18797195,
+                -3.52075749,
+                -1.84263209,
+            ],
+        ]
+    )
 
-    with pytest.raises(AssertionError):
-        assert_array_compare(operator.__ne__, h_matrix_expected, zero_array)
+    subset_size_expected = np.array([1, 1, 2, 1, 2, 2, 3])
+    # zero_array = np.zeros((2, n_subsets))
+
+    # Check h_matrix.
+    assert_array_almost_equal(h_matrix_actual, h_matrix_expected, decimal=6)
+
+    # Check subset_size.
+    assert_array_equal(subset_size_actual, subset_size_expected)
+    # with pytest.raises(AssertionError):
+    #     assert_array_compare(operator.__ne__, h_matrix_expected, zero_array)
 
 
 def test_find_sel():
