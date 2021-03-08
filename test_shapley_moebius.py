@@ -15,6 +15,7 @@ from numpy.testing import assert_array_almost_equal
 from numpy.testing import assert_array_equal
 from shapley_moebius import shapley_moebius_independent
 from shapley_moebius import _calc_h_matrix_independent
+from shapley_moebius import _calc_mob
 from auxiliary_functions import ishigami_function
 
 
@@ -61,6 +62,9 @@ def test_h_matrix_independent():
         n, model, x_a, x_b, n_subsets, power_sequence
     )
 
+    # Get values in MATLAB: data = scipy.io.loadmat('wallah.mat')
+    # save filename.mat file -v7; where file is the object, i.e. MATLAB array.
+
     h_matrix_expected = np.array(
         [
             [1.16043091, 0.11355591, 2.0, 2.04714966, 6.29016113, 3.125, 8.09402466],
@@ -86,6 +90,53 @@ def test_h_matrix_independent():
     assert_array_equal(subset_size_actual, subset_size_expected)
     # with pytest.raises(AssertionError):
     #     assert_array_compare(operator.__ne__, h_matrix_expected, zero_array)
+
+
+def test_mob():
+    """Use same setting as for test_h_matrix_independent."""
+
+    k = 3
+
+    # n = 10
+
+    n_subsets = np.power(2, k) - 1
+
+    h_matrix = np.array(
+        [
+            [1.16043091, 0.11355591, 2.0, 2.04714966, 6.29016113, 3.125, 8.09402466],
+            [
+                2.53569031,
+                0.79321594,
+                3.32890625,
+                3.36791687,
+                5.90360718,
+                4.16113281,
+                6.69682312,
+            ],
+        ]
+    )
+
+    subset_size = np.array([[1, 1, 2, 1, 2, 2, 3]])
+
+    mob_actual = _calc_mob(n_subsets, h_matrix, subset_size)
+
+    # Get expected mob from Octave. Load mob_results.mat.
+    mob_expected = np.array(
+        [
+            [
+                1.16043091,
+                0.11355591,
+                0.36300659,
+                2.04714966,
+                1.54129028,
+                0.48214722,
+                0.0,
+            ],
+            [2.53569031, 0.79321594, 0.0, 3.36791687, 0.0, 0.0, 0.0],
+        ]
+    )
+
+    assert_array_almost_equal(mob_actual, mob_expected)
 
 
 def test_find_sel():
