@@ -19,35 +19,17 @@ from shapley_moebius import _calc_mob_independent
 from auxiliary_functions import ishigami_function
 
 
-# def test_bitwise_and():
-#     k = 4
-#     inputs_encoded = np.power(2, np.arange(k))
-#     i = 3
-
-#     g = (
-#         np.bitwise_and(
-#             i + 1,
-#             inputs_encoded,
-#         )
-#         != 0
-#     )
-
-#     g_expected = np.array([True, True, False, False])
-
-#     assert_array_equal(g, g_expected)
-
-
 def test_h_matrix_independent():
     """The expected result is calculated with the original MATLAB implementation."""
 
     def model(x):
-        return np.sum(x)
+        return np.sum(x, axis=1)
 
     def trafo(x):
         return x
 
     k = 3
-    n = 10
+    n = 100
 
     np.random.seed(123)
     u = cp.create_sobol_samples(n, 2 * k, 123).T
@@ -61,9 +43,6 @@ def test_h_matrix_independent():
     h_matrix_actual, subset_size_actual = _calc_h_matrix_independent(
         n, model, x_a, x_b, n_subsets, power_sequence
     )
-
-    # Get values in MATLAB: data = scipy.io.loadmat('wallah.mat')
-    # save filename.mat file -v7; where file is the object, i.e. MATLAB array.
 
     h_matrix_expected = np.array(
         [
@@ -81,15 +60,12 @@ def test_h_matrix_independent():
     )
 
     subset_size_expected = np.array([[1, 1, 2, 1, 2, 2, 3]])
-    # zero_array = np.zeros((2, n_subsets))
 
     # Check h_matrix.
     assert_array_almost_equal(h_matrix_actual, h_matrix_expected, decimal=6)
 
     # Check subset_size.
     assert_array_equal(subset_size_actual, subset_size_expected)
-    # with pytest.raises(AssertionError):
-    #     assert_array_compare(operator.__ne__, h_matrix_expected, zero_array)
 
 
 def test_mob_independent():
@@ -97,7 +73,7 @@ def test_mob_independent():
 
     k = 3
 
-    # n = 10
+    # n = 100
 
     n_subsets = np.power(2, k) - 1
 
@@ -139,41 +115,13 @@ def test_mob_independent():
     assert_array_almost_equal(mob_actual, mob_expected)
 
 
-# def test_find_sel():
-#     """Check, whether 2nd for loop spits out the correct bits."""
-
-#     expected = np.array(
-#         [
-#             [1, 0, 0, 0, 0, 0, 0],
-#             [0, 1, 0, 0, 0, 0, 0],
-#             [1, 1, 1, 0, 0, 0, 0],
-#             [0, 0, 0, 1, 0, 0, 0],
-#             [1, 0, 0, 1, 1, 0, 0],
-#             [0, 1, 0, 1, 0, 1, 0],
-#             [1, 1, 1, 1, 1, 1, 1],
-#         ]
-#     )
-
-#     actual = np.array([])
-
-#     assert_array_equal(actual, expected)
-
-
-# # def test_mob():
-# #     print(1)
-
-
-# # def test_sum_mob():
-# #     print(1)
-
-
 def test_simplest_case():
     """Test entire function for simple case, where data is uniformly distributed on
     [0, 1). Expected values derived by MATLAB implementation.
     """
 
     def model(x):
-        return np.sum(x)
+        return np.sum(x, axis=1)
 
     def trafo(x):
         return x
@@ -207,22 +155,28 @@ def test_simplest_case():
 #     # trafo = rosenblatt_transformation
 
 
-# def test_ishigami():
-#     """This test setting is taken from PRB20."""
-#     # Transform U(0, 1) to U(-pi, pi). Inputs independent.
-#     def trafo(x):
-#         x_trafo = (x - 0.5) * 2 * np.pi
-#         return x_trafo
+def test_ishigami():
+    """This test setting is taken from PRB20. Independent inputs. Model: Ishigami
+    function.
+    """
+    # Transform U[0, 1) to U[-pi, pi). Inputs independent.
+    def trafo(x):
+        x_trafo = (x - 0.5) * 2 * np.pi
+        return x_trafo
 
-#     k = 3
-#     n = 10 ** 4
+    k = 3
+    n = 10 ** 6
 
-#     shapley_effects, variance = shapley_moebius_independent(
-#         k, n, ishigami_function, trafo
-#     )
+    np.random.seed(123)
 
-#     # Desired values are taken from PRB20.
-#     desired = np.array([0.4358, 0.4424, 0.1218])
+    shapley_effects, variance = shapley_moebius_independent(
+        k, n, ishigami_function, trafo
+    )
 
-#     # Check relative tolerance only.
-#     assert_allclose(shapley_effects, desired, rtol=1e-04)
+    actual = shapley_effects / variance
+
+    # Desired values are taken from PRB20.
+    desired = np.array([[0.4358, 0.4424, 0.1218], [0.4358, 0.4424, 0.1218]])
+
+    # Check relative tolerance only.
+    assert_allclose(actual, desired, rtol=1e-03)
