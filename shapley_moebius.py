@@ -24,7 +24,7 @@ def shapley_moebius_independent(k, n, model, trafo):
     Returns:
     -------
     shapley_effects: nd.array
-        Array containing the estimated Shapley effects.
+        Array containing the estimated non-normalised Shapley effects.
     variance: float
         Total variance of model output.
     """
@@ -89,7 +89,7 @@ def _calc_h_matrix_independent(n, model, x_a, x_b, n_subsets, power_sequence):
         # Fill columns of h_matrix one by one.
         h_matrix[:, i] = [
             np.mean(np.power((y_i - y_a), 2)) / 2,
-            (y_b.T * (y_i - y_a)) / n,
+            np.dot(y_b.T, (y_i - y_a)) / n,
         ]
 
     return h_matrix, subset_size
