@@ -2,7 +2,8 @@
 
 In this repo, I implement algorithm 5.1 from Plischke, Rabitti and Borgonovo (2020). The
 implementation differs on whether model inputs are dependent or not. I translate the
-algorithms from MATLAB to Python and implement corresponding test cases.
+algorithms from MATLAB to Python and implement corresponding test cases, which are taken
+from Iooss and Prieur (2019) and Plischke, Rabitti and Borgonovo (2020).
 
 ## Shapley Effects
 
@@ -21,6 +22,8 @@ dependent and independent inputs.
 
 ## References
 
-Plischke, Elmar, Giovanni Rabitti, Emanuele Borgonovo. 2020. Computing Shapley Effects for Sensitivity Analysis. arXiv.
+Iooss, Betrand and Clémentine Prieur. 2019. Shapley effects for sensitivity analysis with correlated inputs: comparisons with Sobol’ indices, numerical estimation and applications. hal-01556303v6
 
 Owen, Art B. 2014. Sobol’ indices and shapley value. SIAM/ASA Journal on Uncertainty Quantification, 2(1):245–251.
+
+Plischke, Elmar, Giovanni Rabitti, Emanuele Borgonovo. 2020. Computing Shapley Effects for Sensitivity Analysis. arXiv.
