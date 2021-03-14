@@ -17,6 +17,7 @@ from shapley_moebius import shapley_moebius_independent
 from shapley_moebius import _calc_h_matrix_independent
 from shapley_moebius import _calc_mob_independent
 from auxiliary_functions import ishigami_function
+from auxiliary_functions import get_test_values_additive_uniform
 
 
 def test_h_matrix_independent():
@@ -30,9 +31,12 @@ def test_h_matrix_independent():
 
     k = 3
     n = 100
+    seed = 123
 
-    np.random.seed(123)
-    u = cp.create_sobol_samples(n, 2 * k, 123).T
+    # np.random.seed(123)
+    u = cp.create_sobol_samples(n, 2 * k, seed).T
+
+    # u = np.linspace(0, 14.5, 30)
 
     x_a = trafo(u[:, 0:k])
     x_b = trafo(u[:, k:])
@@ -44,28 +48,30 @@ def test_h_matrix_independent():
         n, model, x_a, x_b, n_subsets, power_sequence
     )
 
-    h_matrix_expected = np.array(
-        [
-            [1.16043091, 0.11355591, 2.0, 2.04714966, 6.29016113, 3.125, 8.09402466],
-            [
-                2.53569031,
-                0.79321594,
-                3.32890625,
-                3.36791687,
-                5.90360718,
-                4.16113281,
-                6.69682312,
-            ],
-        ]
-    )
+    # h_matrix_expected = np.array(
+    #     [
+    #         [1.16043091, 0.11355591, 2.0, 2.04714966, 6.29016113, 3.125, 8.09402466],
+    #         [
+    #             2.53569031,
+    #             0.79321594,
+    #             3.32890625,
+    #             3.36791687,
+    #             5.90360718,
+    #             4.16113281,
+    #             6.69682312,
+    #         ],
+    #     ]
+    # )
 
-    subset_size_expected = np.array([[1, 1, 2, 1, 2, 2, 3]])
+    # subset_size_expected = np.array([[1, 1, 2, 1, 2, 2, 3]])
 
-    # Check h_matrix.
-    assert_array_almost_equal(h_matrix_actual, h_matrix_expected, decimal=6)
+    expected_results = get_test_values_additive_uniform(k, n, seed)
+
+    # Check h_matrix. First estimator only.
+    assert_array_almost_equal(h_matrix_actual, expected_results["h_matrix"], decimal=6)
 
     # Check subset_size.
-    assert_array_equal(subset_size_actual, subset_size_expected)
+    assert_array_equal(subset_size_actual, expected_results["subset_size"])
 
 
 def test_mob_independent():
@@ -135,15 +141,21 @@ def test_simplest_case():
         k, n, model, trafo
     )
 
-    shapley_effects_expected = np.array(
-        [[3.06472778, 0.95870972, 4.07058716], [2.53569031, 0.79321594, 3.36791687]]
-    )
+    shapley_effects_normalised = shapley_effects_actual / variance_actual
 
-    variance_expected = np.array([[8.09402466], [6.69682312]])
+    # Check whether normalised Shapley effects sum up to one.
 
-    assert_array_almost_equal(shapley_effects_actual, shapley_effects_expected)
+    assert_array_equal(np.sum(shapley_effects_normalised, axis=1), np.ones(2))
 
-    assert_array_almost_equal(variance_actual, variance_expected)
+    # shapley_effects_expected = np.array(
+    #     [[3.06472778, 0.95870972, 4.07058716], [2.53569031, 0.79321594, 3.36791687]]
+    # )
+
+    # variance_expected = np.array([[8.09402466], [6.69682312]])
+
+    # assert_array_almost_equal(shapley_effects_actual, shapley_effects_expected)
+
+    # assert_array_almost_equal(variance_actual, variance_expected)
 
 
 # def test_():
