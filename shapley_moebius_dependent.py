@@ -113,8 +113,8 @@ def _calc_h_matrix_dependent(k, n, u, model, trafo, n_subsets, rank_corr):
         d_21 = d_matrix[:current_subset_size, current_subset_size + 1 :]
 
         c_i = c_b.copy()
-        c_i[:, g_complement] = n_a[:, g_complement] * d_11 + c_b[:, g_current] * (
-            d_22 / d_21
+        c_i[:, g_complement] = np.dot(n_a[:, g_complement], d_11) + np.dot(
+            c_b[:, g_current], (d_22 / d_21)
         )
 
         x_i = trafo(norm.cdf(c_i))
