@@ -47,7 +47,9 @@ def shapley_moebius_dependent(k, n, model, trafo, rank_corr, random_mode):
     n_subsets = np.power(2, k) - 1
     # power_sequence = np.power(2, k) - 1
 
-    h_matrix, subset_size = _calc_h_matrix_dependent(k, n, u, n_subsets, rank_corr)
+    h_matrix, subset_size = _calc_h_matrix_dependent(
+        k, n, u, model, trafo, n_subsets, rank_corr
+    )
 
     # As in fct. with indep. inputs.
 
