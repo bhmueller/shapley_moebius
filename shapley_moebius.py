@@ -7,7 +7,8 @@ import chaospy as cp
 
 
 def shapley_moebius_independent(k, n, model, trafo):
-    """Estimate Shapley effects under input independence via Möbius inverse.
+    """Estimate Shapley effects under input independence via Möbius inverse. Shapley
+    effects are computed by using two distinct estimators.
 
     Parameters
     ----------
@@ -25,7 +26,7 @@ def shapley_moebius_independent(k, n, model, trafo):
     -------
     shapley_effects: nd.array
         Array containing the estimated non-normalised Shapley effects.
-    variance: float
+    variance: nd.array
         Total variance of model output.
     """
 
