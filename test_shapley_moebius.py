@@ -68,7 +68,9 @@ def test_h_matrix_independent():
     expected_results = get_test_values_additive_uniform(k, n, seed)
 
     # Check h_matrix. First estimator only.
-    assert_array_almost_equal(h_matrix_actual, expected_results["h_matrix"], decimal=6)
+    assert_array_almost_equal(
+        h_matrix_actual[0], expected_results["h_matrix"][0], decimal=6
+    )
 
     # Check subset_size.
     assert_array_equal(subset_size_actual, expected_results["subset_size"])
@@ -123,7 +125,7 @@ def test_mob_independent():
 
 def test_simplest_case():
     """Test entire function for simple case, where data is uniformly distributed on
-    [0, 1). Expected values derived by MATLAB implementation.
+    [0, 1). Normalised by total output variance, Shapley effects should sum up to one.
     """
 
     def model(x):
