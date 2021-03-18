@@ -51,7 +51,7 @@ def shapley_moebius_dependent(k, n, model, trafo, rank_corr, random_mode):
         k, n, u, model, trafo, n_subsets, rank_corr
     )
 
-    # As in fct. with indep. inputs.
+    # Get Shapley effects: As in fct. with indep. inputs.
 
     return u
 
@@ -84,38 +84,31 @@ def _calc_h_matrix_dependent(k, n, u, model, trafo, n_subsets, rank_corr):
         g_current = np.nonzero(g[i])[0]
         g_complement = np.where(g[i] == 0)[0]
 
-        helper_matrix = np.zeros((k, k))
+        # helper_matrix = np.zeros((k, k))
 
-        # WIP: Check whether first case is ever needed.
+        element_1 = rank_corr[g_current, :][:, g_current]
+        element_2 = rank_corr[g_current, :][:, g_complement]
+        element_3 = rank_corr[g_complement, :][:, g_current]
+        element_4 = rank_corr[g_complement, :][:, g_complement]
 
-        if g_current.shape == (0,):
-            helper_matrix = rank_corr[g_complement, g_complement].copy()
+        new_1 = np.hstack((element_1, element_2))
+        new_2 = np.hstack((element_3, element_4))
+        helper_matrix = np.vstack((new_1, new_2))
 
-        elif g_complement.shape == (0,):
-            helper_matrix[g_current, g_current] = rank_corr[g_current, g_current].copy()
-
-        else:
-            helper_matrix[g_current, g_current] = rank_corr[g_current, g_current].copy()
-            helper_matrix[g_current, g_complement] = rank_corr[
-                g_current, g_complement
-            ].copy()
-            helper_matrix[g_complement, g_current] = rank_corr[
-                g_complement, g_current
-            ].copy()
-            helper_matrix[g_complement, g_complement] = rank_corr[
-                g_complement, g_complement
-            ].copy()
-
-        d_matrix = np.linalg.cholesky(helper_matrix)
+        d_matrix = np.linalg.cholesky(helper_matrix).T
 
         d_11 = d_matrix[current_subset_size + 1 :, current_subset_size + 1 :]
         d_22 = d_matrix[:current_subset_size, :current_subset_size]
         d_21 = d_matrix[:current_subset_size, current_subset_size + 1 :]
 
         c_i = c_b.copy()
-        c_i[:, g_complement] = np.dot(n_a[:, g_complement], d_11) + np.dot(
-            c_b[:, g_current], (d_22 / d_21)
-        )
+
+        if g_complement.shape == (0,):
+            pass
+        else:
+            element_1 = np.dot(n_a[:, g_complement], d_11)
+            element_2 = np.dot(c_b[:, g_current], np.linalg.lstsq(d_22, d_21))
+            c_i[:, g_complement] = element_1 + element_2
 
         x_i = trafo(norm.cdf(c_i))
 
