@@ -65,7 +65,9 @@ def test_h_matrix_independent():
 
     # subset_size_expected = np.array([[1, 1, 2, 1, 2, 2, 3]])
 
-    expected_results = get_test_values_additive_uniform(k, n, seed, "independent")
+    expected_results = get_test_values_additive_uniform(
+        k, n, seed, "independent", None, None
+    )
 
     # Check h_matrix. First estimator only.
     assert_array_almost_equal(
