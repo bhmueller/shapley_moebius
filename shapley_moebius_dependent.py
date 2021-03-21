@@ -69,6 +69,7 @@ def _calc_h_matrix_dependent(k, n, u, model, trafo, n_subsets, rank_corr):
     y_a = model(x_a)
     y_b = model(x_b)
 
+    # WIP: Check whether need length n_subsets - 1 instead.
     h_matrix = np.zeros(n_subsets)
     subset_size = np.zeros(n_subsets)
     input_indices = np.arange(n_subsets) + 1
@@ -78,13 +79,13 @@ def _calc_h_matrix_dependent(k, n, u, model, trafo, n_subsets, rank_corr):
     evals = 2
 
     for i in np.arange(n_subsets - 1):
-        current_subset_size = np.sum(g[i]) + 1
+
+        # WIP: Check whether + 1 is needed. I think it's not.
+        current_subset_size = np.sum(g[i])
         subset_size[i] = current_subset_size
 
         g_current = np.nonzero(g[i])[0]
         g_complement = np.where(g[i] == 0)[0]
-
-        # helper_matrix = np.zeros((k, k))
 
         element_1 = rank_corr[g_current, :][:, g_current]
         element_2 = rank_corr[g_current, :][:, g_complement]
@@ -98,9 +99,9 @@ def _calc_h_matrix_dependent(k, n, u, model, trafo, n_subsets, rank_corr):
 
         d_matrix = np.linalg.cholesky(helper_matrix).T
 
-        d_11 = d_matrix[current_subset_size + 1 :, current_subset_size + 1 :]
-        d_22 = d_matrix[:current_subset_size, :current_subset_size]
-        d_21 = d_matrix[:current_subset_size, current_subset_size + 1 :]
+        d_11 = d_matrix[current_subset_size:, current_subset_size:]
+        d_22 = d_matrix[0:current_subset_size, 0:current_subset_size]
+        d_21 = d_matrix[0:current_subset_size, current_subset_size:]
 
         c_i = c_b.copy()
 
