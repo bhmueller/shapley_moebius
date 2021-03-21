@@ -14,7 +14,7 @@ def ishigami_function(x):
     return np.sin(x[:, 0]) * (1 + 0.1 * (x[:, 2] ** 4)) + 7 * (np.sin(x[:, 1]) ** 2)
 
 
-def get_test_values_additive_uniform(k, n, seed, correlation):
+def get_test_values_additive_uniform(k, n, seed, correlation, rank_corr, random_mode):
 
     u = cp.create_sobol_samples(n, 2 * k, seed).T
     scipy.io.savemat("data/n_inputs.mat", {"k": k})
@@ -26,6 +26,8 @@ def get_test_values_additive_uniform(k, n, seed, correlation):
     if correlation == "independent":
         oct.eval("get_expected_values_independent")
     elif correlation == "dependent":
+        scipy.io.savemat("data/random_mode.mat", {"rmode": random_mode})
+        scipy.io.savemat("data/rank_corr.mat", {"C": rank_corr})
         oct.eval("get_expected_values_dependent")
     else:
         print("Please specify correlation.")
