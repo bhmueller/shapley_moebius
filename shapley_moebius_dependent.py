@@ -5,6 +5,8 @@ Rabitti, Emanuele Borgonovo. 2020. Computing Shapley Effects for Sensitivity Ana
 import numpy as np
 import chaospy as cp
 from scipy.stats import norm
+from shapley_moebius import _calc_mob_independent
+from shapley_moebius import _calc_shapley_effects
 
 
 def shapley_moebius_dependent(k, n, model, trafo, rank_corr, random_mode):
@@ -53,7 +55,11 @@ def shapley_moebius_dependent(k, n, model, trafo, rank_corr, random_mode):
 
     # Get Shapley effects: As in fct. with indep. inputs.
 
-    return u
+    mob = _calc_mob_independent(n_subsets, h_matrix, subset_size)
+
+    shapley_effects, variance = _calc_shapley_effects(k, n_subsets, mob, h_matrix)
+
+    return shapley_effects, variance
 
 
 def _calc_h_matrix_dependent(k, n, u, model, trafo, n_subsets, rank_corr):
@@ -78,6 +84,7 @@ def _calc_h_matrix_dependent(k, n, u, model, trafo, n_subsets, rank_corr):
 
     evals = 2
 
+    # WIP: Why n_subsets - 1?
     for i in np.arange(n_subsets - 1):
 
         # WIP: Check whether + 1 is needed. I think it's not.
@@ -99,6 +106,8 @@ def _calc_h_matrix_dependent(k, n, u, model, trafo, n_subsets, rank_corr):
 
         d_matrix = np.linalg.cholesky(helper_matrix).T
 
+        # WIP: Is index correct? Do we need current_subset_size + 1 in the second and
+        # third case?
         d_11 = d_matrix[current_subset_size:, current_subset_size:]
         d_22 = d_matrix[0:current_subset_size, 0:current_subset_size]
         d_21 = d_matrix[0:current_subset_size, current_subset_size:]
