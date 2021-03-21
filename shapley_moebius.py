@@ -47,18 +47,7 @@ def shapley_moebius_independent(k, n, model, trafo):
 
     mob = _calc_mob_independent(n_subsets, h_matrix, subset_size)
 
-    shapley_effects = np.ones((2, k))
-
-    for i in np.arange(k):
-        shapley_effects[:, i] = np.sum(
-            mob[
-                :,
-                np.nonzero(np.bitwise_and(np.arange(n_subsets) + 1, np.power(2, i))),
-            ][:, 0, :],
-            axis=1,
-        )
-
-    variance = np.array([[h_matrix[0, -1]], [h_matrix[1, -1]]])
+    shapley_effects, variance = _calc_shapley_effects(k, n_subsets, mob, h_matrix)
 
     return shapley_effects, variance
 
@@ -121,3 +110,20 @@ def _calc_mob_independent(n_subsets, h_matrix, subset_size):
         # sel = np.bitwise_xor([1, sel], [sel, 0])
 
     return mob
+
+
+def _calc_shapley_effects(k, n_subsets, mob, h_matrix):
+    shapley_effects = np.ones((2, k))
+
+    for i in np.arange(k):
+        shapley_effects[:, i] = np.sum(
+            mob[
+                :,
+                np.nonzero(np.bitwise_and(np.arange(n_subsets) + 1, np.power(2, i))),
+            ][:, 0, :],
+            axis=1,
+        )
+
+    variance = np.array([[h_matrix[0, -1]], [h_matrix[1, -1]]])
+
+    return shapley_effects, variance
