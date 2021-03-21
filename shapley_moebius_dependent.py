@@ -91,6 +91,7 @@ def _calc_h_matrix_dependent(k, n, u, model, trafo, n_subsets, rank_corr):
         element_3 = rank_corr[g_complement, :][:, g_current]
         element_4 = rank_corr[g_complement, :][:, g_complement]
 
+        # Construct new array.
         new_1 = np.hstack((element_1, element_2))
         new_2 = np.hstack((element_3, element_4))
         helper_matrix = np.vstack((new_1, new_2))
@@ -103,12 +104,9 @@ def _calc_h_matrix_dependent(k, n, u, model, trafo, n_subsets, rank_corr):
 
         c_i = c_b.copy()
 
-        if g_complement.shape == (0,):
-            pass
-        else:
-            element_1 = np.dot(n_a[:, g_complement], d_11)
-            element_2 = np.dot(c_b[:, g_current], np.linalg.lstsq(d_22, d_21))
-            c_i[:, g_complement] = element_1 + element_2
+        c_i[:, g_complement] = np.dot(n_a[:, g_complement], d_11) + np.dot(
+            c_b[:, g_current], np.linalg.lstsq(d_22, d_21, rcond=None)[0]
+        )
 
         x_i = trafo(norm.cdf(c_i))
 
