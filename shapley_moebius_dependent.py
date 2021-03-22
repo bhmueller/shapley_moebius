@@ -76,20 +76,21 @@ def _calc_h_matrix_dependent(k, n, u, model, trafo, n_subsets, rank_corr):
     y_b = model(x_b)
 
     # WIP: Check whether need length n_subsets - 1 instead.
-    h_matrix = np.zeros(n_subsets)
-    subset_size = np.zeros(n_subsets)
+    h_matrix = np.zeros((1, n_subsets))
+    subset_size = np.zeros((1, n_subsets))
     input_indices = np.arange(n_subsets) + 1
 
     g = (((input_indices[:, None] & (1 << np.arange(k)))) > 0).astype(bool)
 
+    # WIP: evals necessary?
     evals = 2
 
     # WIP: Why n_subsets - 1?
-    for i in np.arange(n_subsets - 1):
+    for i in np.arange(n_subsets):
 
         # WIP: Check whether + 1 is needed. I think it's not.
         current_subset_size = np.sum(g[i])
-        subset_size[i] = current_subset_size
+        subset_size[:, i] = current_subset_size
 
         g_current = np.nonzero(g[i])[0]
         g_complement = np.where(g[i] == 0)[0]
@@ -124,6 +125,6 @@ def _calc_h_matrix_dependent(k, n, u, model, trafo, n_subsets, rank_corr):
 
         evals = evals + 1
 
-        h_matrix[i] = np.dot(y_b.T, (y_i - y_a)) / n
+        h_matrix[:, i] = np.dot(y_b.T, (y_i - y_a)) / n
 
     return h_matrix, subset_size
