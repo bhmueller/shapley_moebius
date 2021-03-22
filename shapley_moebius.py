@@ -86,7 +86,7 @@ def _calc_h_matrix_independent(n, model, x_a, x_b, n_subsets, power_sequence):
 
 
 def _calc_mob_independent(n_subsets, h_matrix, subset_size):
-    mob = np.zeros((2, n_subsets))
+    mob = np.zeros(h_matrix.shape)
     # sel = 1
 
     sel = np.zeros(n_subsets, dtype=np.int8)
@@ -124,6 +124,6 @@ def _calc_shapley_effects(k, n_subsets, mob, h_matrix):
             axis=1,
         )
 
-    variance = np.array([[h_matrix[0, -1]], [h_matrix[1, -1]]])
+    variance = np.array([h_matrix[:, -1]]).T
 
     return shapley_effects, variance
