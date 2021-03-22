@@ -45,7 +45,7 @@ def shapley_moebius_independent(k, n, model, trafo):
         n, model, x_a, x_b, n_subsets, power_sequence
     )
 
-    mob = _calc_mob_independent(n_subsets, h_matrix, subset_size)
+    mob = _calc_mob(n_subsets, h_matrix, subset_size)
 
     shapley_effects, variance = _calc_shapley_effects(k, n_subsets, mob, h_matrix)
 
@@ -85,7 +85,7 @@ def _calc_h_matrix_independent(n, model, x_a, x_b, n_subsets, power_sequence):
     return h_matrix, subset_size
 
 
-def _calc_mob_independent(n_subsets, h_matrix, subset_size):
+def _calc_mob(n_subsets, h_matrix, subset_size):
     mob = np.zeros(h_matrix.shape)
     # sel = 1
 

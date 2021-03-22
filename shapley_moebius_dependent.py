@@ -5,7 +5,7 @@ Rabitti, Emanuele Borgonovo. 2020. Computing Shapley Effects for Sensitivity Ana
 import numpy as np
 import chaospy as cp
 from scipy.stats import norm
-from shapley_moebius import _calc_mob_independent
+from shapley_moebius import _calc_mob
 from shapley_moebius import _calc_shapley_effects
 
 
@@ -55,7 +55,7 @@ def shapley_moebius_dependent(k, n, model, trafo, rank_corr, random_mode):
 
     # Get Shapley effects: As in fct. with indep. inputs.
 
-    mob = _calc_mob_independent(n_subsets, h_matrix, subset_size)
+    mob = _calc_mob(n_subsets, h_matrix, subset_size)
 
     shapley_effects, variance = _calc_shapley_effects(k, n_subsets, mob, h_matrix)
 

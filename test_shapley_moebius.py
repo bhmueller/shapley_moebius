@@ -15,7 +15,7 @@ from numpy.testing import assert_array_almost_equal
 from numpy.testing import assert_array_equal
 from shapley_moebius import shapley_moebius_independent
 from shapley_moebius import _calc_h_matrix_independent
-from shapley_moebius import _calc_mob_independent
+from shapley_moebius import _calc_mob
 from auxiliary_functions import ishigami_function
 from auxiliary_functions import get_test_values_additive_uniform
 
@@ -104,7 +104,7 @@ def test_mob_independent():
 
     subset_size = np.array([[1, 1, 2, 1, 2, 2, 3]])
 
-    mob_actual = _calc_mob_independent(n_subsets, h_matrix, subset_size)
+    mob_actual = _calc_mob(n_subsets, h_matrix, subset_size)
 
     # Get expected mob from Octave. Load mob_results.mat.
     mob_expected = np.array(
