@@ -35,6 +35,8 @@ def shapley_moebius_dependent(k, n, model, trafo, rank_corr, random_mode):
         Array containing the estimated non-normalised Shapley effects.
     variance: float
         Total variance of model output.
+    evals: int
+        Number of model evaluations.
     """
 
     if random_mode.lower() == "random":
@@ -49,7 +51,7 @@ def shapley_moebius_dependent(k, n, model, trafo, rank_corr, random_mode):
     n_subsets = np.power(2, k) - 1
     # power_sequence = np.power(2, k) - 1
 
-    h_matrix, subset_size = _calc_h_matrix_dependent(
+    h_matrix, subset_size, evals = _calc_h_matrix_dependent(
         k, n, u, model, trafo, n_subsets, rank_corr
     )
 
@@ -59,7 +61,7 @@ def shapley_moebius_dependent(k, n, model, trafo, rank_corr, random_mode):
 
     shapley_effects, variance = _calc_shapley_effects(k, n_subsets, mob, h_matrix)
 
-    return shapley_effects, variance
+    return shapley_effects, variance, evals
 
 
 def _calc_h_matrix_dependent(k, n, u, model, trafo, n_subsets, rank_corr):
@@ -83,7 +85,7 @@ def _calc_h_matrix_dependent(k, n, u, model, trafo, n_subsets, rank_corr):
 
     g = (((input_indices[:, None] & (1 << np.arange(k)))) > 0).astype(bool)
 
-    # WIP: evals necessary?
+    # Count the number of model evaluations.
     evals = 2
 
     # WIP: Why n_subsets - 1?
@@ -128,4 +130,4 @@ def _calc_h_matrix_dependent(k, n, u, model, trafo, n_subsets, rank_corr):
 
         h_matrix[:, i] = np.dot(y_b.T, (y_i - y_a)) / n
 
-    return h_matrix, subset_size
+    return h_matrix, subset_size, evals
