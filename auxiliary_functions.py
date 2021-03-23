@@ -14,6 +14,16 @@ def ishigami_function(x):
     return np.sin(x[:, 0]) * (1 + 0.1 * (x[:, 2] ** 4)) + 7 * (np.sin(x[:, 1]) ** 2)
 
 
+def linear_model(x, beta):
+    return x.dot(beta)
+
+
+def trafo_normal(z, mu, var):
+    sigma = np.sqrt(var)
+    x = mu + z * sigma
+    return x
+
+
 def get_test_values_additive_uniform(k, n, seed, correlation, rank_corr, random_mode):
 
     u = cp.create_sobol_samples(n, 2 * k, seed).T
