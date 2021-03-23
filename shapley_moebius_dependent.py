@@ -67,7 +67,7 @@ def shapley_moebius_dependent(k, n, model, trafo, rank_corr, random_mode):
 def _calc_h_matrix_dependent(k, n, u, model, trafo, n_subsets, rank_corr):
 
     # WIP: Transposed or not? It worked with the non-transposed Chol matrix.
-    s_matrix = np.linalg.cholesky(rank_corr).T
+    s_matrix = np.linalg.cholesky(rank_corr)
 
     n_a = norm.ppf(u[:, 0:k])  # Normal a sample.
     # WIP: Correct?
