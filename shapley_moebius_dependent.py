@@ -64,16 +64,22 @@ def shapley_moebius_dependent(k, n, model, trafo, rank_corr, random_mode):
     return shapley_effects, variance, evals
 
 
-def _calc_h_matrix_dependent(k, n, u, model, trafo, n_subsets, rank_corr):
-
-    # WIP: Transposed or not? It worked with the non-transposed Chol matrix.
-    s_matrix = np.linalg.cholesky(rank_corr)
-
+def _sample_data(s_matrix, u, k, trafo):
     n_a = norm.ppf(u[:, 0:k])  # Normal a sample.
     # WIP: Correct?
     x_a = trafo(norm.cdf(np.dot(n_a, s_matrix)))
     c_b = np.dot(norm.ppf(u[:, k:]), s_matrix)  # Correlated b sample.
     x_b = trafo(norm.cdf(c_b))
+
+    return n_a, c_b, x_a, x_b
+
+
+def _calc_h_matrix_dependent(k, n, u, model, trafo, n_subsets, rank_corr):
+
+    # WIP: Transposed or not? It worked with the non-transposed Chol matrix.
+    s_matrix = np.linalg.cholesky(rank_corr)
+
+    n_a, c_b, x_a, x_b = _sample_data(s_matrix, u, k, trafo)
 
     y_a = model(x_a)
     y_b = model(x_b)
