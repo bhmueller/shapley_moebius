@@ -77,10 +77,11 @@ def test_linear_two_inputs():
     beta_1 = 1.3
     beta_2 = 1.5
     beta = np.array([beta_1, beta_2])
-    var_1 = 16
-    var_2 = 4
+    var_1 = 16.0
+    var_2 = 4.0
     var = np.array([var_1, var_2])
-    mu = np.array([3, 5])
+    # mu has no effect on Shapley effects in this setting.
+    mu = np.array([0.0, 0.0])
     rho = 0.3
 
     # Calculate analytical Shapley effects.
@@ -96,13 +97,13 @@ def test_linear_two_inputs():
         component_2 * (1 - share) + covariance * beta_1 * beta_2 + component_1 * share
     ) / var_y
 
-    shapley_expected = np.array([true_shapley_1, true_shapley_2])
+    shapley_expected = np.array([[true_shapley_1, true_shapley_2]])
 
     model = partial(linear_model, beta=beta)
     trafo = partial(trafo_normal, mu=mu, var=var)
 
     k = 2
-    n = 10 ** 6
+    n = 10 ** 7
     rank_corr = np.array([[1, rho], [rho, 1]])
     random_mode = "Sobol"
 
@@ -117,7 +118,49 @@ def test_linear_two_inputs():
 def test_linear_three_inputs():
     """Test case taken from IP19, section 3.3. A linear model with three correlated
     Gaussian inputs is considered."""
-    print("hi")
+
+    beta_1 = 1.3
+    beta_2 = 1.5
+    beta_3 = 2.5
+    beta = np.array([beta_1, beta_2, beta_3])
+    var_1 = 16
+    var_2 = 4
+    var_3 = 9
+    var = np.array([var_1, var_2, var_3])
+    # Again, mu does not affect analytical Shapley effects.
+    mu = np.array([0.0, 0.0, 0.0])
+    rho = 0.3
+
+    component_1 = beta_1 ** 2 * var_1
+    component_2 = beta_2 ** 2 * var_2
+    component_3 = beta_3 ** 2 * var_3
+    covariance = rho * np.sqrt(var_2) * np.sqrt(var_3)
+    var_y = component_1 + component_2 + component_3 + 2 * covariance * beta_2 * beta_3
+    share = 0.5 * (rho ** 2)
+    true_shapley_1 = (component_1) / var_y
+    true_shapley_2 = (
+        component_2 + covariance * beta_2 * beta_3 + share * (component_3 - component_2)
+    ) / var_y
+    true_shapley_3 = (
+        component_3 + covariance * beta_2 * beta_3 + share * (component_2 - component_3)
+    ) / var_y
+
+    shapley_expected = np.array([[true_shapley_1, true_shapley_2, true_shapley_3]])
+
+    model = partial(linear_model, beta=beta)
+    trafo = partial(trafo_normal, mu=mu, var=var)
+
+    k = 3
+    n = 10 ** 7
+    rank_corr = np.array([[1, 0, 0], [0, 1, rho], [0, rho, 1]])
+    random_mode = "Sobol"
+
+    shapley_effects, variance, evals = shapley_moebius_dependent(
+        k, n, model, trafo, rank_corr, random_mode
+    )
+    shapley_actual = shapley_effects / variance
+
+    assert_array_almost_equal(shapley_actual, shapley_expected)
 
 
 def test_additive():
