@@ -53,6 +53,27 @@ def get_test_values_additive_uniform(k, n, seed, correlation, rank_corr, random_
     return expected_results
 
 
+def get_test_values_sample_data(k, n, seed, rank_corr):
+
+    u = cp.create_sobol_samples(n, 2 * k, seed).T
+    scipy.io.savemat("data/n_inputs.mat", {"k": k})
+    scipy.io.savemat("data/n_samples.mat", {"n": n})
+    scipy.io.savemat("data/u_sample.mat", {"u": u})
+    scipy.io.savemat("data/rank_corr.mat", {"C": rank_corr})
+    # Change directory.
+    oct.eval("cd C:/Users/admin/shapley_moebius/data")
+    # Run .m file.
+    oct.eval("get_sample_data")
+
+    expected_results = {
+        "x_a": scipy.io.loadmat("data/x_a_results.mat")["xa"],
+        "x_b": scipy.io.loadmat("data/x_b_results.mat")["xb"],
+        "n_a": scipy.io.loadmat("data/n_a_results.mat")["na"],
+        "c_b": scipy.io.loadmat("data/c_b_results.mat")["cb"],
+    }
+    return expected_results
+
+
 def transformation_mvnorm(u):
     """Transform uniformly distributed variables into a multivariate normal
     distribution.
