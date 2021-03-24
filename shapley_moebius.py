@@ -113,7 +113,7 @@ def _calc_mob(n_subsets, h_matrix, subset_size):
 
 
 def _calc_shapley_effects(k, n_subsets, mob, h_matrix):
-    shapley_effects = np.ones((2, k))
+    shapley_effects = np.ones((h_matrix.shape[0], k))
 
     for i in np.arange(k):
         shapley_effects[:, i] = np.sum(
