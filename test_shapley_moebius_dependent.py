@@ -14,6 +14,7 @@ from auxiliary_functions import get_test_values_additive_uniform
 from auxiliary_functions import get_test_values_sample_data
 from auxiliary_functions import linear_model
 from auxiliary_functions import trafo_normal
+from auxiliary_functions import additive_model
 
 
 def test_shapley_moebius_dependent():
@@ -37,7 +38,7 @@ def test_shapley_moebius_dependent():
 
 def test_s_matrix():
     rank_corr = np.array([[1, -0.5, 0.5], [-0.5, 1, 0], [0.5, 0, 1]])
-    s_matrix = np.linalg.cholesky(rank_corr)
+    s_matrix = np.linalg.cholesky(rank_corr).T
 
     expected = np.array(
         [
@@ -65,7 +66,7 @@ def test_sample_data():
     var = np.array([var_1, var_2, var_3])
 
     rank_corr = np.array([[1, -0.5, 0.5], [-0.5, 1, 0], [0.5, 0, 1]])
-    s_matrix = np.linalg.cholesky(rank_corr)
+    s_matrix = np.linalg.cholesky(rank_corr).T
 
     trafo = partial(trafo_normal, mu=mu, var=var)
 
@@ -215,4 +216,40 @@ def test_linear_three_inputs():
 def test_additive():
     """Test case taken from IP19, section 3.5. An additive model with an interaction
     with three correlated Gaussian inputs is considered."""
-    print("hi")
+
+    var_1 = 1
+    var_2 = 1
+    var_3 = 1
+    var = np.array([var_1, var_2, var_3])
+    mu = np.array([0.0, 0.0, 0.0])
+    rho = 0.3
+    # covariance = rho * np.sqrt(var_1) * np.sqrt(var_3)
+    # Variance obtained analytically by myself.
+    var_y = var_1 + var_2 * var_3
+
+    true_shapley_1 = (
+        (var_1 * (1 - ((rho ** 2) / 2))) + (((var_2 * var_3) * (rho ** 2)) / 6)
+    ) / var_y
+    true_shapley_2 = (((var_2 * var_3) * (3 + (rho ** 2))) / 6) / var_y
+    true_shapley_3 = (
+        ((var_1 * (rho ** 2)) / 2) + (((var_2 * var_3) * (3 - (2 * (rho ** 2)))) / 6)
+    ) / var_y
+
+    shapley_expected = np.array([[true_shapley_1, true_shapley_2, true_shapley_3]])
+
+    trafo = partial(trafo_normal, mu=mu, var=var)
+
+    k = 3
+    n = 10 ** 6
+    rank_corr = np.array([[1, 0, rho], [0, 1, 0], [rho, 0, 1]])
+    random_mode = "random"
+
+    shapley_effects, variance, evals = shapley_moebius_dependent(
+        k, n, additive_model, trafo, rank_corr, random_mode
+    )
+    shapley_actual = shapley_effects / variance
+
+    # Test non-normalised Shapley effects.
+    assert_array_almost_equal(shapley_effects, shapley_expected * var_y)
+
+    assert_array_almost_equal(shapley_actual, shapley_expected)
