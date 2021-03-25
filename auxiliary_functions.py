@@ -18,6 +18,10 @@ def linear_model(x, beta):
     return x.dot(beta)
 
 
+def additive_model(x):
+    return x[:, 0] + x[:, 1] * x[:, 2]
+
+
 def trafo_normal(z, mu, var):
     sigma = np.sqrt(var)
     x = mu + z * sigma
