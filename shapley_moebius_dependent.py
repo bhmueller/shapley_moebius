@@ -24,7 +24,8 @@ def shapley_moebius_dependent(k, n, model, trafo, rank_corr, random_mode):
         Function that transforms uniformly distributed variables into
         desired marginal distribution, e.g. inverse Rosenblatt transformation.
     rank_corr: nd.array
-        Rank correlation matrix of inputs for dependent sampling.
+        (Pearson) rank correlation matrix of inputs for dependent sampling. C needs to
+        be positive-definite for the Cholesky decomposition to work.
     random_mode: str
         Choose how initial uniformly distributed samples are drawn: 'random' for pseudo-
         random (MC) sampling and 'Sobol' for quasi-random (QMC) sampling.
@@ -94,7 +95,6 @@ def _calc_h_matrix_dependent(k, n, u, model, trafo, n_subsets, rank_corr):
     # Count the number of model evaluations.
     evals = 2
 
-    # WIP: Why n_subsets - 1?
     for i in np.arange(n_subsets):
 
         # WIP: Check whether + 1 is needed. I think it's not.
