@@ -77,7 +77,7 @@ def _sample_data(s_matrix, u, k, trafo):
 def _calc_h_matrix_dependent(k, n, u, model, trafo, n_subsets, rank_corr):
 
     # WIP: Transposed or not? It worked with the non-transposed Chol matrix.
-    s_matrix = np.linalg.cholesky(rank_corr)
+    s_matrix = np.linalg.cholesky(rank_corr).T
 
     n_a, c_b, x_a, x_b = _sample_data(s_matrix, u, k, trafo)
 
