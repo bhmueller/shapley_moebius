@@ -76,23 +76,3 @@ def get_test_values_sample_data(k, n, seed, rank_corr):
         "c_b": scipy.io.loadmat("data/c_b_results.mat")["cb"],
     }
     return expected_results
-
-
-def transformation_mvnorm(u):
-    """Transform uniformly distributed variables into a multivariate normal
-    distribution.
-
-    Parameters
-    ----------
-    u : nd.array
-        Matrix of uniformly distributed variables.
-
-    Returns
-    -------
-    x : nd.array
-        Matrix of normally distributed variables.
-
-    """
-
-    # Convert to standard normal draws.
-    # stnorm_data = norm.ppf(u)
