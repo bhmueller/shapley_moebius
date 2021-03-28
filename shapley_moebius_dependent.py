@@ -5,8 +5,8 @@ Rabitti, Emanuele Borgonovo. 2020. Computing Shapley Effects for Sensitivity Ana
 import numpy as np
 import chaospy as cp
 from scipy.stats import norm
-from shapley_moebius import _calc_mob
-from shapley_moebius import _calc_shapley_effects
+from shapley_moebius_independent import _calc_mob
+from shapley_moebius_independent import _calc_shapley_effects
 
 
 def shapley_moebius_dependent(k, n, model, trafo, rank_corr, random_mode):

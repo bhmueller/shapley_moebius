@@ -13,9 +13,9 @@ from numpy.testing import assert_array_compare
 from numpy.testing import assert_allclose
 from numpy.testing import assert_array_almost_equal
 from numpy.testing import assert_array_equal
-from shapley_moebius import shapley_moebius_independent
-from shapley_moebius import _calc_h_matrix_independent
-from shapley_moebius import _calc_mob
+from shapley_moebius_independent import shapley_moebius_independent
+from shapley_moebius_independent import _calc_h_matrix_independent
+from shapley_moebius_independent import _calc_mob
 from auxiliary_functions import ishigami_function
 from auxiliary_functions import get_test_values_additive_uniform
 
