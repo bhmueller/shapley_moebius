@@ -19,7 +19,7 @@ from auxiliary_functions import additive_model
 
 
 def test_shapley_moebius_dependent():
-    """Check whether function runs through."""
+    """Check whether function runs through for very simple case."""
 
     k = 3
     n = 100
@@ -35,21 +35,6 @@ def test_shapley_moebius_dependent():
     random_mode = "Sobol"
 
     shapley_moebius_dependent(k, n, model, trafo, rank_corr, random_mode)
-
-
-def test_s_matrix():
-    rank_corr = np.array([[1, -0.5, 0.5], [-0.5, 1, 0], [0.5, 0, 1]])
-    s_matrix = np.linalg.cholesky(rank_corr).T
-
-    expected = np.array(
-        [
-            [1.00000, -0.50000, 0.50000],
-            [0.00000, 0.86603, 0.28868],
-            [0.00000, 0.00000, 0.81650],
-        ]
-    )
-
-    assert_array_almost_equal(s_matrix, expected, decimal=5)
 
 
 def test_sample_data():
@@ -222,9 +207,9 @@ def test_additive():
     var_2 = 1
     var_3 = 1
     var = np.array([var_1, var_2, var_3])
+    # In IP19 mu is explicitly set to zero vector.
     mu = np.array([0.0, 0.0, 0.0])
     rho = 0.3
-    # covariance = rho * np.sqrt(var_1) * np.sqrt(var_3)
     # Variance obtained analytically by myself.
     var_y = var_1 + var_2 * var_3
 
