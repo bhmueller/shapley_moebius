@@ -5,7 +5,6 @@ This module contains functions needed for the tests of shapley_moebius.py.
 import numpy as np
 import chaospy as cp
 import scipy.io
-from scipy.stats import norm
 
 from oct2py import octave as oct
 
