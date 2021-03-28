@@ -1,23 +1,20 @@
 """
-This file contains tests for shapley_moebius.py.
+This file contains tests for shapley_moebius_independent.py.
 
-Iooss, Betrand and Clémentine Prieur. 2019.
-    Shapley effects for sensitivity analysis with correlated inputs: comparisons with
-    Sobol’ indices, numerical estimation and applications. hal-01556303v6
+Test cases referenced in the following by PRB20 were taken from:
+Plischke, Elmar, Giovanni Rabitti, Emanuele Borgonovo. 2020.
+    Computing Shapley Effects for Sensitivity Analysis. arXiv.
 """
 import numpy as np
 import chaospy as cp
-import operator
-import pytest
-from numpy.testing import assert_array_compare
 from numpy.testing import assert_allclose
 from numpy.testing import assert_array_almost_equal
 from numpy.testing import assert_array_equal
 from shapley_moebius_independent import shapley_moebius_independent
 from shapley_moebius_independent import _calc_h_matrix_independent
 from shapley_moebius_independent import _calc_mob
-from auxiliary_functions import ishigami_function
-from auxiliary_functions import get_test_values_additive_uniform
+from auxiliary import ishigami_function
+from auxiliary import get_test_values_additive_uniform
 
 
 def test_h_matrix_independent():
