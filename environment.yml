@@ -14,6 +14,7 @@ dependencies:
 - scipy
 - chaospy
 - pip
+- oct2py
 - pip:
   - flake8
   - black
