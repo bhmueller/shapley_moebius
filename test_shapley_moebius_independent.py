@@ -5,6 +5,7 @@ Test cases referenced in the following by PRB20 were taken from:
 Plischke, Elmar, Giovanni Rabitti, Emanuele Borgonovo. 2020.
     Computing Shapley Effects for Sensitivity Analysis. arXiv.
 """
+import scipy.io
 import numpy as np
 import chaospy as cp
 from numpy.testing import assert_allclose
@@ -15,6 +16,9 @@ from shapley_moebius_independent import _calc_h_matrix_independent
 from shapley_moebius_independent import _calc_mob
 from auxiliary import ishigami_function
 from auxiliary import get_test_values_additive_uniform
+
+
+get_expected_values = False
 
 
 def test_h_matrix_independent():
@@ -30,10 +34,7 @@ def test_h_matrix_independent():
     n = 100
     seed = 123
 
-    # np.random.seed(123)
     u = cp.create_sobol_samples(n, 2 * k, seed).T
-
-    # u = np.linspace(0, 14.5, 30)
 
     x_a = trafo(u[:, 0:k])
     x_b = trafo(u[:, k:])
@@ -45,26 +46,20 @@ def test_h_matrix_independent():
         n, model, x_a, x_b, n_subsets, power_sequence
     )
 
-    # h_matrix_expected = np.array(
-    #     [
-    #         [1.16043091, 0.11355591, 2.0, 2.04714966, 6.29016113, 3.125, 8.09402466],
-    #         [
-    #             2.53569031,
-    #             0.79321594,
-    #             3.32890625,
-    #             3.36791687,
-    #             5.90360718,
-    #             4.16113281,
-    #             6.69682312,
-    #         ],
-    #     ]
-    # )
-
-    # subset_size_expected = np.array([[1, 1, 2, 1, 2, 2, 3]])
-
-    expected_results = get_test_values_additive_uniform(
-        k, n, seed, "independent", None, None
-    )
+    if get_expected_values is True:
+        expected_results = get_test_values_additive_uniform(
+            k, n, seed, "independent", None, None
+        )
+    else:
+        expected_results = {
+            "subset_size": scipy.io.loadmat("data/subset_size_results.mat")["sz"],
+            "h_matrix": scipy.io.loadmat("data/h_matrix_results.mat")["H"],
+            "mob": scipy.io.loadmat("data/mob_results.mat")["mob"],
+            "variance": scipy.io.loadmat("data/variance_results.mat")["V"],
+            "shapley_effects": scipy.io.loadmat("data/shapley_effects_results.mat")[
+                "Shap"
+            ],
+        }
 
     # Check h_matrix. First estimator only.
     assert_array_almost_equal(
@@ -79,8 +74,6 @@ def test_mob_independent():
     """Use same setting as for test_h_matrix_independent."""
 
     k = 3
-
-    # n = 100
 
     n_subsets = np.power(2, k) - 1
 
@@ -103,7 +96,7 @@ def test_mob_independent():
 
     mob_actual = _calc_mob(n_subsets, h_matrix, subset_size)
 
-    # Get expected mob from Octave. Load mob_results.mat.
+    # Get expected mob from Octave.
     mob_expected = np.array(
         [
             [

@@ -6,6 +6,7 @@ Iooss, Betrand and Clémentine Prieur. 2019.
     Shapley effects for sensitivity analysis with correlated inputs: comparisons with
     Sobol’ indices, numerical estimation and applications. hal-01556303v6
 """
+import scipy.io
 import numpy as np
 import chaospy as cp
 from functools import partial
@@ -18,6 +19,9 @@ from auxiliary import get_test_values_sample_data
 from auxiliary import linear_model
 from auxiliary import trafo_normal
 from auxiliary import additive_model
+
+
+get_expected_values = False
 
 
 def test_shapley_moebius_dependent():
@@ -58,7 +62,15 @@ def test_sample_data():
 
     trafo = partial(trafo_normal, mu=mu, var=var)
 
-    expected_results = get_test_values_sample_data(k, n, seed, rank_corr)
+    if get_expected_values is True:
+        expected_results = get_test_values_sample_data(k, n, seed, rank_corr)
+    else:
+        expected_results = {
+            "x_a": scipy.io.loadmat("data/x_a_results.mat")["xa"],
+            "x_b": scipy.io.loadmat("data/x_b_results.mat")["xb"],
+            "n_a": scipy.io.loadmat("data/n_a_results.mat")["na"],
+            "c_b": scipy.io.loadmat("data/c_b_results.mat")["cb"],
+        }
 
     n_a, c_b, x_a, x_b = _sample_data(s_matrix, u, k, trafo)
 
