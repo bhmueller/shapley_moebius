@@ -39,3 +39,9 @@ Iooss, Betrand and Clémentine Prieur. 2019. Shapley effects for sensitivity ana
 Owen, Art B. 2014. Sobol’ indices and shapley value. SIAM/ASA Journal on Uncertainty Quantification, 2(1):245–251.
 
 Plischke, Elmar, Giovanni Rabitti, Emanuele Borgonovo. 2020. Computing Shapley Effects for Sensitivity Analysis. arXiv.
+
+## Further work on this module
+
+1. Wrap code in a class while maintaining useability of tests.
+2. Create package.
+3. Setup Java repository.
