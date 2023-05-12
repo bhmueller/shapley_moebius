@@ -1,10 +1,11 @@
-name: epp-project
+name: shm
 
 channels:
 - conda-forge
 
 dependencies:
-- python=3.8
+# Do not fix py version. When installing Conda, I attached Py 3.10 with Conda for other progranmes (e. g. VS Code); so, maybe avoid fixing a certain Py version.
+- python
 - ipython
 - numpy
 - pandas
@@ -15,6 +16,7 @@ dependencies:
 - chaospy
 - pip
 - oct2py
+- pytest
 - pip:
   - flake8
   - black
