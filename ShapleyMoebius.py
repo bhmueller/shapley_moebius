@@ -6,6 +6,8 @@ class ShapleyMoebius:
     
     def independent(k, n, model, trafo):
         shapley_effects, variance = shapley_moebius_independent(k, n, model, trafo)
+        return shapley_effects, variance
 
     def dependent(k, n, model, trafo, rank_corr, random_mode):
         shapley_effects, variance, evals = shapley_moebius_dependent(k, n, model, trafo, rank_corr, random_mode)
+        return shapley_effects, variance, evals
