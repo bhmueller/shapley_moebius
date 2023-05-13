@@ -11,6 +11,7 @@ import chaospy as cp
 from numpy.testing import assert_allclose
 from numpy.testing import assert_array_almost_equal
 from numpy.testing import assert_array_equal
+from ShapleyMoebius import ShapleyMoebius
 from shapley_moebius_independent import shapley_moebius_independent
 from shapley_moebius_independent import _calc_h_matrix_independent
 from shapley_moebius_independent import _calc_mob
@@ -131,6 +132,7 @@ def test_simplest_case():
 
     np.random.seed(123)
 
+    # a. Via function call.
     shapley_effects_actual, variance_actual = shapley_moebius_independent(
         k, n, model, trafo
     )
@@ -140,6 +142,19 @@ def test_simplest_case():
     # Check whether normalised Shapley effects sum up to one.
 
     assert_array_equal(np.sum(shapley_effects_normalised, axis=1), np.ones(2))
+
+    # b. Call via class.
+    shapley_effects_actual, variance_actual = ShapleyMoebius.independent(
+        k, n, model, trafo
+    )
+
+    shapley_effects_normalised = shapley_effects_actual / variance_actual
+
+    # Check whether normalised Shapley effects sum up to one.
+
+    assert_array_equal(np.sum(shapley_effects_normalised, axis=1), np.ones(2))
+
+    ###
 
     # shapley_effects_expected = np.array(
     #     [[3.06472778, 0.95870972, 4.07058716], [2.53569031, 0.79321594, 3.36791687]]

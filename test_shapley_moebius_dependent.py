@@ -12,6 +12,7 @@ import chaospy as cp
 from functools import partial
 from numpy.testing import assert_array_almost_equal
 from numpy.testing import assert_allclose
+from ShapleyMoebius import ShapleyMoebius
 from shapley_moebius_dependent import shapley_moebius_dependent
 from shapley_moebius_dependent import _calc_h_matrix_dependent
 from shapley_moebius_dependent import _sample_data
@@ -40,7 +41,10 @@ def test_shapley_moebius_dependent():
 
     random_mode = "Sobol"
 
+    # Simple function call.
     shapley_moebius_dependent(k, n, model, trafo, rank_corr, random_mode)
+    # Call via class.
+    ShapleyMoebius.dependent(k, n, model, trafo, rank_corr, random_mode)
 
 
 def test_sample_data():
